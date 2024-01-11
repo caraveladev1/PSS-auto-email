@@ -1,0 +1,24 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.4.0/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true
+		},
+		"include": ["scripts/**/*.js", "src/**/*.js", "*/.mjs", ".mjs"]
+	},
+	"javascript": {
+		"formatter": {
+			"arrowParentheses": "always",
+			"jsxQuoteStyle": "single",
+			"quoteStyle": "single",
+			"semicolons": "always",
+			"trailingComma": "all",
+			"bracketSpacing": true,
+			"bracketSameLine": false
+		}
+	}
+}
