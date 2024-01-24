@@ -80,6 +80,7 @@ async function organizarDatos() {
 				courrier_name: dato.courrier_name,
 				sample_shipping_state: dato.sample_shipping_state,
 				sample_shipping_date: dato.sample_shipping_date,
+				shipment_month: dato.shipment_month,
 				customer_sample_feedback: dato.customer_sample_feedback,
 				customer_feedback_date: dato.customer_feedback_date,
 				email_sent: dato.email_sent,
@@ -97,6 +98,7 @@ async function organizarDatos() {
 						courrier_name: dato.courrier_name,
 						sample_shipping_state: dato.sample_shipping_state,
 						sample_shipping_date: dato.sample_shipping_date,
+						shipment_month: dato.shipment_month,
 						customer_sample_feedback: dato.customer_sample_feedback,
 						customer_feedback_date: dato.customer_feedback_date,
 						email_sent: dato.email_sent,
@@ -110,7 +112,7 @@ async function organizarDatos() {
 	}, {});
 
 	const datosFinales = JSON.stringify(datosOrganizados);
-	console.log(datosFinales);
+	//console.log(datosFinales);
 	return datosFinales;
 }
 
@@ -125,7 +127,7 @@ async function enviarCorreo(cliente) {
 		if (muestrasPendientes.length > 0) {
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
-				to: ['juan.diaz@caravela.coffee'],
+				to: ['juan.diaz@caravela.coffee', 'alejandro.cadena@caravela.coffee'],
 				subject: 'Notification of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
@@ -146,7 +148,7 @@ ${cliente.sampleData
     - Contract: ${sample.contracts}
     - Mark: ${sample.mark}
     - Sample ID: ${sample.sample_id}
-    - Shipment Date: ${sample.sample_shipping_date}
+    - Shipment Month: ${sample.shipment_month}
 `,
 			)
 			.join('\n');
@@ -204,7 +206,11 @@ async function enviarFeedbackCorreo(cliente) {
 		if (muestrasPendientesFeedback.length > 0) {
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
-				to: ['juan.diaz@caravela.coffee'],
+				to: [
+					'juan.diaz@caravela.coffee',
+					//'marlin.ospina@caravela.coffee',
+					//'alejandro.cadena@caravela.coffee',
+				],
 				subject: 'Feedback of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
@@ -225,7 +231,7 @@ ${cliente.sampleData
     - Contract: ${sample.contracts}
     - Mark: ${sample.mark}
     - Sample ID: ${sample.sample_id}
-    - Shipment Date: ${sample.sample_shipping_date}
+    - Shipment Month: ${sample.shipment_month}
 `,
 			)
 			.join('\n');
