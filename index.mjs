@@ -127,7 +127,7 @@ async function enviarCorreo(cliente) {
 		if (muestrasPendientes.length > 0) {
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
-				to: ['juan.diaz@caravela.coffee', 'alejandro.cadena@caravela.coffee'],
+				to: ['juan.diaz@caravela.coffee'],
 				subject: 'Notification of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
@@ -159,7 +159,8 @@ ${cliente.sampleData
     
 To track the shipment, you can use the provided tracking numbers on the shipping company's website.
 
-We invite you to share your feedback and results from the tastings once the samples arrive. Your insights are valuable to us! 
+We invite you to share your feedback and results from the tastings once the samples arrive.
+Please provide your feedback through this link: https://forms.office.com/r/CaA4Pj0QsL?origin=lprLink.
 
 Best regards,
 CARAVELA COFFEE
@@ -242,7 +243,8 @@ ${cliente.sampleData
     
 To track the shipment, you can use the provided tracking numbers on the shipping company's website.
 
-We invite you to share your feedback and results from the tastings once the samples arrive. Your insights are valuable to us! 
+We invite you to share your feedback and results from the tastings once the samples arrive.
+Please provide your feedback through this link: https://forms.office.com/r/CaA4Pj0QsL?origin=lprLink. 
 
 Best regards,
 CARAVELA COFFEE
