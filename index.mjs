@@ -282,7 +282,11 @@ async function main() {
 		}
 	} catch (error) {
 		console.error('Error:', error);
+		process.exit(1);
 	}
 }
 
-main();
+main().then(() => {
+	// Cerrar el programa después de completar la ejecución
+	process.exit();
+});
