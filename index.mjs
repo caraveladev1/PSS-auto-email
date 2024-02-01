@@ -58,6 +58,8 @@ async function organizarDatos() {
 			acumulador[clienteKey] = {
 				customer: dato.customer,
 				customerEmail: dato.customer_email,
+				caravela_mail: dato.caravela_mail,
+				destination_office: dato.destination_office,
 				sampleData: [],
 			};
 		}
@@ -125,9 +127,17 @@ async function enviarCorreo(cliente) {
 		);
 
 		if (muestrasPendientes.length > 0) {
+			const customer_email = cliente.customerEmail;
+			const caravela_mail = cliente.caravela_mail;
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
-				to: ['juan.diaz@caravela.coffee'],
+				to: [],
+				bcc: [
+					'juan.diaz@caravela.coffee',
+					caravela_mail,
+
+					/* , 'alejandro.cadena@caravela.coffee' */
+				],
 				subject: 'Notification of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
@@ -204,12 +214,14 @@ async function enviarFeedbackCorreo(cliente) {
 				),
 		);
 		if (muestrasPendientesFeedback.length > 0) {
+			const customer_email = cliente.customerEmail;
+			const caravela_mail = cliente.caravela_mail;
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
-				to: [
+				to: [],
+				bcc: [
 					'juan.diaz@caravela.coffee',
-					//'marlin.ospina@caravela.coffee',
-					//'alejandro.cadena@caravela.coffee',
+					caravela_mail /* , 'alejandro.cadena@caravela.coffee' */,
 				],
 				subject: 'Feedback of Preshipment Sample Sent',
 				text: `
