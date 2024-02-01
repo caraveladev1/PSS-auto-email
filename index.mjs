@@ -169,7 +169,7 @@ ${cliente.sampleData
     
 To track the shipment, you can use the provided tracking numbers on the shipping company's website.
 
-We invite you to share your feedback and results from the tastings once the samples arrive through this link: https://forms.office.com/r/CaA4Pj0QsL?origin=lprLink.
+Please let us know if you approve this sample. Please provide your feedback here: https://forms.office.com/r/CaA4Pj0QsL?origin=lprLink.
 
 Best regards,
 CARAVELA COFFEE
@@ -254,7 +254,7 @@ ${cliente.sampleData
     
 To track the shipment, you can use the provided tracking numbers on the shipping company's website.
 
-We invite you to share your feedback and results from the tastings once the samples arrive through this link: https://forms.office.com/r/CaA4Pj0QsL?origin=lprLink.
+Please let us know if you approve this sample. Please provide your feedback here: https://forms.office.com/r/CaA4Pj0QsL?origin=lprLink.
 
 
 Best regards,
