@@ -132,12 +132,7 @@ async function enviarCorreo(cliente) {
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
 				to: [],
-				bcc: [
-					'juan.diaz@caravela.coffee',
-					caravela_mail,
-
-					/* , 'alejandro.cadena@caravela.coffee' */
-				],
+				bcc: ['juan.diaz@caravela.coffee', caravela_mail, customer_email],
 				subject: 'Notification of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
@@ -219,10 +214,7 @@ async function enviarFeedbackCorreo(cliente) {
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
 				to: [],
-				bcc: [
-					'juan.diaz@caravela.coffee',
-					caravela_mail /* , 'alejandro.cadena@caravela.coffee' */,
-				],
+				bcc: ['juan.diaz@caravela.coffee', caravela_mail, customer_email],
 				subject: 'Feedback of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
