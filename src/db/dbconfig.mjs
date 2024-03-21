@@ -1,8 +1,11 @@
-// dbConfig.js
 import sql from 'mssql'
 import dotenv from 'dotenv'
 import pc from 'picocolors'
-dotenv.config()
+import path from 'path'
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const envPath = path.resolve(__dirname, '../../.env')
+dotenv.config({ path: envPath })
 
 async function connectDB() {
   const pool = await new sql.ConnectionPool({
@@ -26,3 +29,5 @@ async function connectDB() {
   }
 }
 export default connectDB
+
+

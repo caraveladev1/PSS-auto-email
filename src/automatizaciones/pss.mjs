@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
-import connectDB from './dbconfig.mjs';
+import connectDB from '../db/dbconfig.mjs';
+
+
 
 //Configuración del transporte de correo electrónico para Outlook
 const transporter = nodemailer.createTransport({
@@ -30,8 +32,9 @@ async function getDataPSS() {
 async function updateEmailStatus(sample_id) {
 	try {
 		const pool = await connectDB();
-		const sqlUpdateEmailStatus = `UPDATE listPSS SET [email_sent] = 2 WHERE [sample_id] = '${sample_id}'`;
-		await pool.request().query(sqlUpdateEmailStatus);
+		const sqlUpdateEmailStatus = `UPDATE listPSS SET [email_sent] = 2 WHERE [sample_id] = @sample_id`;
+		const request = pool.request().input('sample_id', sample_id);
+		await request.request().query(sqlUpdateEmailStatus);
 	} catch (error) {
 		console.error('Error:', error);
 	}
@@ -40,8 +43,9 @@ async function updateEmailStatus(sample_id) {
 async function updateFeedbackEmailStatus(sample_id) {
 	try {
 		const pool = await connectDB();
-		const sqlUpdateEmailStatus = `UPDATE listPSS SET [email_no_feedback] = 2 WHERE [sample_id] = '${sample_id}'`;
-		await pool.request().query(sqlUpdateEmailStatus);
+		const sqlUpdateEmailStatus = `UPDATE listPSS SET [email_no_feedback] = 2 WHERE [sample_id] = @sample_id`;
+		const request = pool.request().input('sample_id', sample_id);
+		await request.request().query(sqlUpdateEmailStatus);
 	} catch (error) {
 		console.error('Error:', error);
 	}
@@ -58,17 +62,22 @@ async function organizarDatos() {
 			acumulador[clienteKey] = {
 				customer: dato.customer,
 				customerEmail: dato.customer_email,
+				caravela_mail: dato.caravela_mail,
+				destination_office: dato.destination_office,
 				sampleData: [],
 			};
 		}
 
-		// Verificar si ya existe un objeto con el mismo sample_tracking_i'd
+		// Verificar si email_sent y email_no_feedback son ambos iguales a '2'
+		if (dato.email_sent === '2' && dato.email_no_feedback === '2') {
+			return acumulador;
+		}
+
 		const existingSample = acumulador[clienteKey].sampleData.find(
 			(sample) => sample.sample_tracking_id === dato.sample_tracking_id,
 		);
 
 		if (existingSample) {
-			// Si existe, agregar los datos al array 'data' del objeto existente
 			existingSample.data.push({
 				contracts: dato.Contract,
 				origin: dato.origin,
@@ -77,13 +86,13 @@ async function organizarDatos() {
 				courrier_name: dato.courrier_name,
 				sample_shipping_state: dato.sample_shipping_state,
 				sample_shipping_date: dato.sample_shipping_date,
+				shipment_month: dato.shipment_month,
 				customer_sample_feedback: dato.customer_sample_feedback,
 				customer_feedback_date: dato.customer_feedback_date,
 				email_sent: dato.email_sent,
 				email_no_feedback: dato.email_no_feedback,
 			});
 		} else {
-			// Si no existe, crear un nuevo objeto para el sample_tracking_id
 			acumulador[clienteKey].sampleData.push({
 				sample_tracking_id: dato.sample_tracking_id,
 				data: [
@@ -95,6 +104,7 @@ async function organizarDatos() {
 						courrier_name: dato.courrier_name,
 						sample_shipping_state: dato.sample_shipping_state,
 						sample_shipping_date: dato.sample_shipping_date,
+						shipment_month: dato.shipment_month,
 						customer_sample_feedback: dato.customer_sample_feedback,
 						customer_feedback_date: dato.customer_feedback_date,
 						email_sent: dato.email_sent,
@@ -121,9 +131,12 @@ async function enviarCorreo(cliente) {
 		);
 
 		if (muestrasPendientes.length > 0) {
+			const customer_email = cliente.customerEmail;
+			const caravela_mail = cliente.caravela_mail;
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
-				to: ['juan.diaz@caravela.coffee'],
+				to: [],
+				bcc: ['juan.diaz@caravela.coffee', /* caravela_mail, customer_email */],
 				subject: 'Notification of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
@@ -131,31 +144,31 @@ Dear ${cliente.customer},
 We are pleased to inform you that the pre-shipment samples for the next contracts have been successfully sent. Below are the shipment details:
 
 ${cliente.sampleData
-	.filter((sampleGroup) =>
-		sampleGroup.data.some((sample) => sample.email_sent === '1'),
-	)
-	.map((sampleGroup) => {
-		const sampleTrackingId = sampleGroup.sample_tracking_id;
-		const sampleCourrier = sampleGroup.data[0].courrier_name;
-		const sampleOrigin = sampleGroup.data[0].origin;
-		const sampleInfo = sampleGroup.data
-			.map(
-				(sample) => `
+						.filter((sampleGroup) =>
+							sampleGroup.data.some((sample) => sample.email_sent === '1'),
+						)
+						.map((sampleGroup) => {
+							const sampleTrackingId = sampleGroup.sample_tracking_id;
+							const sampleCourrier = sampleGroup.data[0].courrier_name;
+							const sampleOrigin = sampleGroup.data[0].origin;
+							const sampleInfo = sampleGroup.data
+								.map(
+									(sample) => `
     - Contract: ${sample.contracts}
     - Mark: ${sample.mark}
     - Sample ID: ${sample.sample_id}
-    - Shipment Date: ${sample.sample_shipping_date}
+    - Shipment Month: ${sample.shipment_month}
 `,
-			)
-			.join('\n');
+								)
+								.join('\n');
 
-		return `Sample Tracking ID: ${sampleTrackingId}\nSample Courrier: ${sampleCourrier}\nSample Origin : ${sampleOrigin}\n${sampleInfo}`;
-	})
-	.join('\n\n')}
+							return `Sample Tracking ID: ${sampleTrackingId}\nSample Courrier: ${sampleCourrier}\nSample Origin : ${sampleOrigin}\n${sampleInfo}`;
+						})
+						.join('\n\n')}
     
 To track the shipment, you can use the provided tracking numbers on the shipping company's website.
 
-We invite you to share your feedback and results from the tastings once the samples arrive. Your insights are valuable to us! 
+Please let us know if you approve this sample. Please provide your feedback here: https://forms.office.com/r/CaA4Pj0QsL?origin=lprLink.
 
 Best regards,
 CARAVELA COFFEE
@@ -195,14 +208,17 @@ async function enviarFeedbackCorreo(cliente) {
 						sample.email_sent === '2' &&
 						Math.floor(
 							(Date.now() - new Date(sample.sample_shipping_date).getTime()) /
-								(24 * 60 * 60 * 1000),
+							(24 * 60 * 60 * 1000),
 						) > 14,
 				),
 		);
 		if (muestrasPendientesFeedback.length > 0) {
+			const customer_email = cliente.customerEmail;
+			const caravela_mail = cliente.caravela_mail;
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
-				to: ['juan.diaz@caravela.coffee'],
+				to: [],
+				bcc: ['juan.diaz@caravela.coffee', /* caravela_mail, customer_email */],
 				subject: 'Feedback of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
@@ -210,31 +226,32 @@ Dear ${cliente.customer},
 We are pleased to inform you that the pre-shipment samples for the next contracts have been successfully sent. Below are the shipment details:
 
 ${cliente.sampleData
-	.filter((sampleGroup) =>
-		sampleGroup.data.some((sample) => sample.email_no_feedback === '1'),
-	)
-	.map((sampleGroup) => {
-		const sampleTrackingId = sampleGroup.sample_tracking_id;
-		const sampleCourrier = sampleGroup.data[0].courrier_name;
-		const sampleOrigin = sampleGroup.data[0].origin;
-		const sampleInfo = sampleGroup.data
-			.map(
-				(sample) => `
+						.filter((sampleGroup) =>
+							sampleGroup.data.some((sample) => sample.email_no_feedback === '1'),
+						)
+						.map((sampleGroup) => {
+							const sampleTrackingId = sampleGroup.sample_tracking_id;
+							const sampleCourrier = sampleGroup.data[0].courrier_name;
+							const sampleOrigin = sampleGroup.data[0].origin;
+							const sampleInfo = sampleGroup.data
+								.map(
+									(sample) => `
     - Contract: ${sample.contracts}
     - Mark: ${sample.mark}
     - Sample ID: ${sample.sample_id}
-    - Shipment Date: ${sample.sample_shipping_date}
+    - Shipment Month: ${sample.shipment_month}
 `,
-			)
-			.join('\n');
+								)
+								.join('\n');
 
-		return `Sample Tracking ID: ${sampleTrackingId}\nSample Courrier: ${sampleCourrier}\nSample Origin : ${sampleOrigin}\n${sampleInfo}`;
-	})
-	.join('\n\n')}
+							return `Sample Tracking ID: ${sampleTrackingId}\nSample Courrier: ${sampleCourrier}\nSample Origin : ${sampleOrigin}\n${sampleInfo}`;
+						})
+						.join('\n\n')}
     
 To track the shipment, you can use the provided tracking numbers on the shipping company's website.
 
-We invite you to share your feedback and results from the tastings once the samples arrive. Your insights are valuable to us! 
+Please let us know if you approve this sample. Please provide your feedback here: https://forms.office.com/r/CaA4Pj0QsL?origin=lprLink.
+
 
 Best regards,
 CARAVELA COFFEE
@@ -272,7 +289,11 @@ async function main() {
 		}
 	} catch (error) {
 		console.error('Error:', error);
+		process.exit(1);
 	}
 }
 
-main();
+main().then(() => {
+	// Cerrar el programa después de completar la ejecución
+	process.exit();
+});
