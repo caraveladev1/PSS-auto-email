@@ -79,8 +79,8 @@ async function enviarCorreo(cliente) {
     const muestrasPendientes = cliente.sampleData.filter((muestra) => muestra.email_sent === '1');
 
     if (muestrasPendientes.length > 0) {
-      const customer_email = cliente.sampleData.map(sampleGroup => sampleGroup.customer_email_addresses).flat();;
-      const caravela_mail = cliente.caravela_mail;
+      const customer_email = cliente.sampleData[0].customer_email_addresses;
+      const caravela_mail = cliente.sampleData[0].caravela_mail;
       const mensaje = {
         from: 'soporte@caravela.coffee',
         to: [],
@@ -89,13 +89,14 @@ async function enviarCorreo(cliente) {
         text: `
 Dear ${cliente.customer},
 
-We are pleased to inform you that the pre-shipment samples for the next contracts have been successfully sent. Below are the shipment details:
+We are pleased to inform you that the offer samples for the next opportunities have been successfully sent. Below are the shipment details:
 
 ${muestrasPendientes.map((muestra) => `
-- Contract: ${muestra.opportunitie}
+- Opportunitie: ${muestra.opportunitie}
 - Mark: ${muestra.mark}
 - Sample ID: ${muestra.sample}
-- Shipment Month: ${muestra.shipping_at}
+- Tracking ID: ${muestra.tracking_id}
+- Courrier: ${muestra.currier}
 `).join('\n')}
 
 To track the shipment, you can use the provided tracking numbers on the shipping company's website.
