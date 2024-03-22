@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import connectDB from '../db/dbconfig.mjs';
-
+import pc from 'picocolors';
 
 
 //Configuración del transporte de correo electrónico para Outlook
@@ -136,7 +136,7 @@ async function enviarCorreo(cliente) {
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
 				to: [],
-				bcc: ['juan.diaz@caravela.coffee', caravela_mail, customer_email],
+				bcc: ['juan.diaz@caravela.coffee'/* , caravela_mail, customer_email */],
 				subject: 'Notification of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
@@ -177,22 +177,22 @@ CARAVELA COFFEE
 
 			// Enviar el correo
 			await transporter.sendMail(mensaje);
-			console.log(
+			console.log(pc.blue('[MUESTRAS PSS]'),
 				`successfully Notification email sent to ${cliente.customer}`,
-			);
+			)
 			// Update the email status for the current sample
 			for (const sample of muestrasPendientes) {
 				const sampleIdToUpdate = sample.sample_id;
-				console.log(
+				console.log(pc.blue('[MUESTRAS PSS]'),
 					`Updating Notification email status for Sample ID: ${sampleIdToUpdate}`,
 				);
 				await updateEmailStatus(sampleIdToUpdate);
 			}
-		} else {
-			console.log(`Notification email to ${cliente.customer} is already sent`);
 		}
+		console.log(pc.blue('[MUESTRAS PSS]'), `Notification email to ${cliente.customer} is already sent`);
+
 	} catch (error) {
-		console.error('Error sending email:', error);
+		console.error('[MUESTRAS PSS] Error sending email:', error)
 	}
 }
 
@@ -218,7 +218,7 @@ async function enviarFeedbackCorreo(cliente) {
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
 				to: [],
-				bcc: ['juan.diaz@caravela.coffee', /* caravela_mail, customer_email */],
+				bcc: ['juan.diaz@caravela.coffee'/* , caravela_mail, customer_email */],
 				subject: 'Feedback of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
@@ -260,24 +260,24 @@ CARAVELA COFFEE
 
 			// Enviar el correo
 			await transporter.sendMail(mensaje);
-			console.log(`successfully Feedback email sent to ${cliente.customer}`);
+			console.log(pc.blue('[MUESTRAS PSS]'), `successfully Feedback email sent to ${cliente.customer}`);
 			for (const sample of muestrasPendientesFeedback) {
 				const sampleIdToUpdate = sample.sample_id;
-				console.log(
+				console.log(pc.blue('[MUESTRAS PSS]'),
 					`Updating Feedback email status for Sample ID: ${sampleIdToUpdate}`,
 				);
 				await updateFeedbackEmailStatus(sampleIdToUpdate);
 			}
 		} else {
-			console.log(`Feedback email to ${cliente.customer} is already sent`);
+			console.log(pc.blue('[MUESTRAS PSS]'), `Feedback email to ${cliente.customer} is already sent`);
 		}
 	} catch (error) {
-		console.error('Error sending email:', error);
+		console.error('[MUESTRAS PSS] Error sending email:', error)
 	}
 }
 
 // Lógica principal
-async function main() {
+export async function startPSSAutomation() {
 	try {
 		const datosFinales = await organizarDatos();
 		const clientes = JSON.parse(datosFinales);
@@ -288,12 +288,9 @@ async function main() {
 			await enviarFeedbackCorreo(cliente);
 		}
 	} catch (error) {
-		console.error('Error:', error);
+		console.error('[MUESTRAS PSS] Error:', error)
 		process.exit(1);
 	}
 }
 
-main().then(() => {
-	// Cerrar el programa después de completar la ejecución
-	process.exit();
-});
+

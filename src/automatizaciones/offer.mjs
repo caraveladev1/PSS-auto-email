@@ -1,6 +1,6 @@
 import transporter from '../mail/mail.mjs';
 import connectDB from '../db/dbconfig.mjs'
-
+import pc from 'picocolors'
 
 
 //Función para obtener datos de la base de datos
@@ -111,39 +111,36 @@ CARAVELA COFFEE
 
       // Enviar el correo
       await transporter.sendMail(mensaje);
-      console.log(`Successfully Notification email sent to ${cliente.customer}`);
+      console.log(pc.magenta('[MUESTRAS OFFER]'), `Successfully Notification email sent to ${cliente.customer}`);
       // Actualizar el estado del correo electrónico para la muestra actual
       for (const muestra of muestrasPendientes) {
         const sampleIdToUpdate = muestra.sample;
-        console.log(`Updating Notification email status for Sample ID: ${sampleIdToUpdate}`);
+        console.log(pc.magenta('[MUESTRAS OFFER]'), `Updating Notification email status for Sample ID: ${sampleIdToUpdate}`);
         await updateEmailStatus(sampleIdToUpdate);
       }
     } else {
-      console.log(`Notification email to ${cliente.customer} is already sent`);
+      console.log(pc.magenta('[MUESTRAS OFFER]'), `Notification email to ${cliente.customer} is already sent`);
     }
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('[MUESTRAS OFFER] Error sending email:', error)
   }
 }
 
 
 
 
-async function main() {
+export async function startOfferAutomation() {
   try {
     const datosFinales = await organizarDatos();
     const datosFinalesObjeto = JSON.parse(datosFinales);
     for (const cliente of datosFinalesObjeto) {
-      console.log(`Validando Datos de: ${cliente.customer}`);
+      console.log(pc.magenta('[MUESTRAS OFFER]'), `Validando Datos de: ${cliente.customer}`);
       await enviarCorreo(cliente);
     }
   } catch (error) {
-    console.error('Error al enviar correos:', error);
+    console.error('[MUESTRAS OFFER] Error al enviar correos:', error)
   }
 }
 
 
 
-// Llamar a la función main
-//organizarDatos()
-main();
