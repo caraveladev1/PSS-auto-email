@@ -81,6 +81,7 @@ async function enviarCorreo(cliente) {
     if (muestrasPendientes.length > 0) {
       const customer_email = cliente.sampleData[0].customer_email_addresses;
       const caravela_mail = cliente.sampleData[0].caravela_mail;
+      //console.log(customer_email, caravela_mail);
       const mensaje = {
         from: 'soporte@caravela.coffee',
         to: [],
@@ -133,10 +134,9 @@ async function main() {
     const datosFinales = await organizarDatos();
     const datosFinalesObjeto = JSON.parse(datosFinales);
     for (const cliente of datosFinalesObjeto) {
-      console.log(`Enviando correos electrónicos para el cliente: ${cliente.customer}`);
+      console.log(`Validando Datos de: ${cliente.customer}`);
       await enviarCorreo(cliente);
     }
-    console.log('Correos enviados correctamente.');
   } catch (error) {
     console.error('Error al enviar correos:', error);
   }

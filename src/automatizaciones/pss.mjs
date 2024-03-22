@@ -34,7 +34,7 @@ async function updateEmailStatus(sample_id) {
 		const pool = await connectDB();
 		const sqlUpdateEmailStatus = `UPDATE listPSS SET [email_sent] = 2 WHERE [sample_id] = @sample_id`;
 		const request = pool.request().input('sample_id', sample_id);
-		await request.request().query(sqlUpdateEmailStatus);
+		await request.query(sqlUpdateEmailStatus);
 	} catch (error) {
 		console.error('Error:', error);
 	}
@@ -45,7 +45,7 @@ async function updateFeedbackEmailStatus(sample_id) {
 		const pool = await connectDB();
 		const sqlUpdateEmailStatus = `UPDATE listPSS SET [email_no_feedback] = 2 WHERE [sample_id] = @sample_id`;
 		const request = pool.request().input('sample_id', sample_id);
-		await request.request().query(sqlUpdateEmailStatus);
+		await request.query(sqlUpdateEmailStatus);
 	} catch (error) {
 		console.error('Error:', error);
 	}
@@ -136,7 +136,7 @@ async function enviarCorreo(cliente) {
 			const mensaje = {
 				from: 'soporte@caravela.coffee',
 				to: [],
-				bcc: ['juan.diaz@caravela.coffee', /* caravela_mail, customer_email */],
+				bcc: ['juan.diaz@caravela.coffee', caravela_mail, customer_email],
 				subject: 'Notification of Preshipment Sample Sent',
 				text: `
 Dear ${cliente.customer},
