@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.mjs",
-    "dev2": "nodemon mailchimp.mjs"
+    "pss": "nodemon src/automatizaciones/pss.mjs",
+    "offer": "nodemon src/automatizaciones/offer.mjs",
+    "spotContract": "nodemon src/automatizaciones/spotContract.mjs"
   },
   "author": "",
   "license": "ISC",
