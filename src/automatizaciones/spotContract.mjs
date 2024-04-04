@@ -113,10 +113,9 @@ async function enviarCorreoCancelled(dataOrganizada) {
   }
 }
 
-async function main() {
+export async function startSCAutomatization() {
   const dataOrganizada = await organizarDatos();
   await enviarCorreoNew(dataOrganizada);
   await enviarCorreoCancelled(dataOrganizada);
 }
 
-main()
