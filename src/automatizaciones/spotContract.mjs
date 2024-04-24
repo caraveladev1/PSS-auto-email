@@ -32,7 +32,7 @@ async function getDataSC() {
 async function updateEmailStatus(contract) {
   try {
     const pool = await connectDB();
-    const sqlUpdateEmailStatus = `UPDATE listSC SET [mail_sent] = 2 WHERE [contract] = @contract`;
+    const sqlUpdateEmailStatus = 'UPDATE listSC SET [mail_sent] = 2 WHERE [contract] = @contract';
     const request = pool.request().input('contract', contract);
     await request.query(sqlUpdateEmailStatus);
   } catch (error) {
@@ -54,7 +54,8 @@ async function enviarCorreoNew(dataOrganizada) {
       for (const contract of contractsNewPending) {
         const mailOptions = {
           from: 'soporte@caravela.coffee',
-          to: 'juan.diaz@caravela.coffee',
+          to: [],
+          bcc: ['juan.diaz@caravela.coffee', contract.caravela_mail ],
           subject: `Creation Spot Contract ${contract.contract}`,
           text: `The following SPOT contract has been created: 
 
@@ -68,8 +69,9 @@ async function enviarCorreoNew(dataOrganizada) {
           `,
 
         };
-        await transporter.sendMail(mailOptions);
         await updateEmailStatus(contract.contract);
+        console.log('estado actualizado', contract.mail_sent)
+        await transporter.sendMail(mailOptions);
         console.log(pc.green(`[SPOT CONTRACT]: Correo enviado ${contract.contract}`));
       }
     } else { console.log(pc.green('[SPOT CONTRACT]: No hay correos con estado "nuevo" por enviar')); }
@@ -87,7 +89,8 @@ async function enviarCorreoCancelled(dataOrganizada) {
       for (const contract of contractsCancelledPending) {
         const mailOptions = {
           from: 'soporte@caravela.coffee',
-          to: 'juan.diaz@caravela.coffee',
+          to: [],
+          bcc: ['juan.diaz@caravela.coffee'/* , contract.caravela_mail */],
           subject: `Cancellation Spot Contract ${contract.contract}`,
           text: `The following SPOT contract has been cancelled: 
 
@@ -101,8 +104,8 @@ async function enviarCorreoCancelled(dataOrganizada) {
           `,
 
         };
-        await transporter.sendMail(mailOptions);
         await updateEmailStatus(contract.contract);
+        await transporter.sendMail(mailOptions);
         console.log(pc.green(`[SPOT CONTRACT]: Correo enviado ${contract.contract}`));
       }
 
@@ -119,3 +122,5 @@ export async function startSCAutomatization() {
   await enviarCorreoCancelled(dataOrganizada);
 }
 
+
+startSCAutomatization()
