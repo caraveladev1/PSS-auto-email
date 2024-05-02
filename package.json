@@ -8,6 +8,7 @@
     "offer": "nodemon src/automatizaciones/offer.mjs",
     "sc": "nodemon src/automatizaciones/spotContract.mjs",
     "ss": "nodemon src/automatizaciones/sampleStatus.mjs",
+    "ssrh": "nodemon src/automatizaciones/sampleStatusRH.mjs",
     "dev":"nodemon index.mjs"
   },
   "author": "",
