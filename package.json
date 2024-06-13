@@ -9,7 +9,8 @@
     "sc": "nodemon src/automatizaciones/spotContract.mjs",
     "ss": "nodemon src/automatizaciones/sampleStatus.mjs",
     "ssrh": "nodemon src/automatizaciones/sampleStatusRH.mjs",
-    "dev":"nodemon index.mjs"
+    "dev":"nodemon index.mjs",
+    "mi": "nodemon src/automatizaciones/milling.mjs"
   },
   "author": "",
   "license": "ISC",

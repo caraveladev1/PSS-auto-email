@@ -5,8 +5,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: 'soporte@caravela.coffee',
-    pass: 'V1ll@v1c3nc10*',
+    user: 'notification@caravela.coffee',
+    pass: 'Caravela2024',
   },
   etls: { ciphers: 'STARTTLS' },
   connectionTimeout: 60000,
