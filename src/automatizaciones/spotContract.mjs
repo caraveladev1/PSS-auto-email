@@ -1,20 +1,10 @@
 import nodemailer from 'nodemailer';
 import connectDB from '../db/dbconfig.mjs';
 import pc from 'picocolors';
+import transporter from '../mail/mail.mjs';
 
 
-//Configuración del transporte de correo electrónico para Outlook
-const transporter = nodemailer.createTransport({
-  host: 'smtp-mail.outlook.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: 'soporte@caravela.coffee',
-    pass: 'V1ll@v1c3nc10*',
-  },
-  etls: { ciphers: 'STARTTLS' },
-  connectionTimeout: 60000,
-});
+
 
 //Función para obtener datos de la base de datos
 async function getDataSC() {
@@ -53,7 +43,7 @@ async function enviarCorreoNew(dataOrganizada) {
     if (contractsNewPending.length > 0) {
       for (const contract of contractsNewPending) {
         const mailOptions = {
-          from: 'soporte@caravela.coffee',
+          from: 'notification@caravela.coffee',
           to: [],
           bcc: ['juan.diaz@caravela.coffee', contract.caravela_mail ],
           subject: `Creation Spot Contract ${contract.contract}`,
@@ -88,7 +78,7 @@ async function enviarCorreoCancelled(dataOrganizada) {
     if (contractsCancelledPending.length > 0) {
       for (const contract of contractsCancelledPending) {
         const mailOptions = {
-          from: 'soporte@caravela.coffee',
+          from: 'notification@caravela.coffee',
           to: [],
           bcc: ['juan.diaz@caravela.coffee'/* , contract.caravela_mail */],
           subject: `Cancellation Spot Contract ${contract.contract}`,

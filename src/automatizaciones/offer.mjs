@@ -83,7 +83,7 @@ async function enviarCorreo(cliente) {
       const caravela_mail = cliente.sampleData[0].caravela_mail;
       //console.log(customer_email, caravela_mail);
       const mensaje = {
-        from: 'soporte@caravela.coffee',
+        from: 'notification@caravela.coffee',
         to: [],
         bcc: ['juan.diaz@caravela.coffee', /* caravela_mail, customer_email */],
         subject: 'Notification of Offer Sample Sent',

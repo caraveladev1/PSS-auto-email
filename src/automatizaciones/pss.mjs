@@ -1,20 +1,7 @@
 import nodemailer from 'nodemailer';
 import connectDB from '../db/dbconfig.mjs';
 import pc from 'picocolors';
-
-
-//Configuración del transporte de correo electrónico para Outlook
-const transporter = nodemailer.createTransport({
-	host: 'smtp-mail.outlook.com',
-	port: 587,
-	secure: false,
-	auth: {
-		user: 'soporte@caravela.coffee',
-		pass: 'V1ll@v1c3nc10*',
-	},
-	etls: { ciphers: 'STARTTLS' },
-	connectionTimeout: 60000,
-});
+import transporter from '../mail/mail.mjs';
 
 //Función para obtener datos de la base de datos
 async function getDataPSS() {
@@ -134,7 +121,7 @@ async function enviarCorreo(cliente) {
 			const customer_email = cliente.customerEmail;
 			const caravela_mail = cliente.caravela_mail;
 			const mensaje = {
-				from: 'soporte@caravela.coffee',
+				from: 'notification@caravela.coffee',
 				to: [],
 				bcc: ['juan.diaz@caravela.coffee'/* , caravela_mail, customer_email */],
 				subject: 'Notification of Preshipment Sample Sent',
@@ -216,7 +203,7 @@ async function enviarFeedbackCorreo(cliente) {
 			const customer_email = cliente.customerEmail;
 			const caravela_mail = cliente.caravela_mail;
 			const mensaje = {
-				from: 'soporte@caravela.coffee',
+				from: 'notification@caravela.coffee',
 				to: [],
 				bcc: ['juan.diaz@caravela.coffee'/* , caravela_mail, customer_email */],
 				subject: 'Feedback of Preshipment Sample Sent',
