@@ -43,7 +43,7 @@ async function enviarCorreoAccepted(dataOrganizada) {
         const mailOptions = {
           from: 'notification@caravela.coffee',
           to: [],
-          bcc: ['juan.diaz@caravela.coffee'/* , sample_id.caravela_mail */ ],
+          bcc: ['juan.diaz@caravela.coffee', sample_id.caravela_mail ],
           subject: `The Sample: ${sample_id.sample_id} has been accepted`,
           text: `The following Sample has change the state: 
 
@@ -75,7 +75,7 @@ async function enviarCorreoRejected(dataOrganizada) {
         const mailOptions = {
           from: 'notification@caravela.coffee',
           to: [],
-          bcc: ['juan.diaz@caravela.coffee'/* , sample_id.caravela_mail */],
+          bcc: ['juan.diaz@caravela.coffee' , sample_id.caravela_mail ],
           subject: `The sample: ${sample_id.sample_id} has been rejected`,
           text: `The following Sample has change the state: 
 
@@ -109,4 +109,4 @@ export async function startSampleStateAutomatization() {
 }
 
 
-startSampleStateAutomatization()
+//startSampleStateAutomatization()

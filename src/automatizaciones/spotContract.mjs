@@ -80,7 +80,7 @@ async function enviarCorreoCancelled(dataOrganizada) {
         const mailOptions = {
           from: 'notification@caravela.coffee',
           to: [],
-          bcc: ['juan.diaz@caravela.coffee'/* , contract.caravela_mail */],
+          bcc: ['juan.diaz@caravela.coffee' , contract.caravela_mail],
           subject: `Cancellation Spot Contract ${contract.contract}`,
           text: `The following SPOT contract has been cancelled: 
 
@@ -113,4 +113,4 @@ export async function startSCAutomatization() {
 }
 
 
-startSCAutomatization()
+//startSCAutomatization()
